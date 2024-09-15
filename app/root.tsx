@@ -4,8 +4,10 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
+  useRouteError,
 } from "@remix-run/react";
-import "./tailwind.css";
+import "./styles/tailwind.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -26,5 +28,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+      <Outlet />
+  )
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError() as any;
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <h1>Error!</h1>
+      <p>{error?.message ?? "Unknown error"}</p>
+    </>
+  );
 }
